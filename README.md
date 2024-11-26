@@ -1,127 +1,218 @@
 # API de Gerenciamento de Posts, Usuários e Tags
 
-Esta API foi criada com **Express.js** e **Prisma** para gerenciar posts, usuários e tags. Ela oferece endpoints para realizar operações de CRUD em cada uma dessas entidades.
-
-## Tecnologias Utilizadas
-
-- **Node.js**: Plataforma de desenvolvimento.
-- **Express.js**: Framework para a criação de APIs.
-- **Prisma**: ORM para modelagem e interação com o banco de dados.
-- **PostgreSQL**: Banco de dados relacional.
-- **JavaScript**: Linguagem principal.
-
-## Configuração do Ambiente
-
-1. **Clonar o repositório**:
-
-   ```bash
-   git clone https://github.com/antonielzeferino/first-prisma-api.git
-   ```
-
-2. **Instalar as dependências**:
-
-   ```bash
-   npm install
-   ```
-
-3. **Configurar as variáveis de ambiente**:
-   - Crie um arquivo `.env` com a seguinte variável:
-     ```
-     DATABASE_URL=postgresql://usuario:senha@localhost:5432/nome_do_banco
-     ```
-
-4. **Executar as migrações do banco de dados**:
-
-   ```bash
-   npx prisma migrate dev
-   ```
-
-5. **Iniciar o servidor**:
-
-   ```bash
-   npm start
-   ```
-
-6. O servidor estará disponível em: [http://localhost:3000](http://localhost:3000).
+Esta API permite gerenciar posts, tags e usuários, oferecendo endpoints para criar, buscar, atualizar e excluir informações.
 
 ---
 
 ## Endpoints da API
 
-### Usuários (`/api/users`)
-- **GET `/api/users`**: Retorna todos os usuários cadastrados.
-- **POST `/api/users`**: Cria um novo usuário.
-  - **Body**:
-    ```json
-    {
-      "email": "user@example.com",
-      "name": "Nome do Usuário"
-    }
-    ```
+### **Posts (`/api/posts`)**
 
-### Posts (`/api/posts`)
-- **GET `/api/posts`**: Retorna todos os posts cadastrados.
-- **POST `/api/posts`**: Cria um novo post.
-  - **Body**:
-    ```json
+#### **GET `/api/posts`**
+- **Descrição:** Retorna todos os posts cadastrados.
+- **Resposta:**  
+  ```json
+  [
     {
+      "id": 1,
       "title": "Título do Post",
       "content": "Conteúdo do Post",
+      "published": true,
       "authorId": 1
     }
-    ```
+  ]
+  ```
 
-### Tags (`/api/tags`)
-- **GET `/api/tags`**: Retorna todas as tags cadastradas.
-- **POST `/api/tags`**: Cria uma nova tag.
-  - **Body**:
-    ```json
+#### **POST `/api/posts`**
+- **Descrição:** Cria um novo post.
+- **Body:**  
+  ```json
+  {
+    "title": "Título do Post",
+    "content": "Conteúdo do Post",
+    "authorId": 1
+  }
+  ```
+- **Resposta:**  
+  ```json
+  {
+    "id": 1,
+    "title": "Título do Post",
+    "content": "Conteúdo do Post",
+    "published": false,
+    "authorId": 1
+  }
+  ```
+
+#### **GET `/api/posts/search`**
+- **Descrição:** Busca posts por parâmetros de pesquisa.
+- **Query Params:** 
+  - `title`: (opcional) Filtra posts pelo título.
+  - `authorId`: (opcional) Filtra posts por autor.
+- **Exemplo:** `/api/posts/search?title=Tutorial`
+- **Resposta:**  
+  ```json
+  [
     {
-      "name": "Nome da Tag"
+      "id": 1,
+      "title": "Tutorial de API",
+      "content": "Conteúdo",
+      "authorId": 1
     }
-    ```
+  ]
+  ```
+
+#### **GET `/api/posts/:id`**
+- **Descrição:** Retorna detalhes de um post específico.
+- **Resposta:**  
+  ```json
+  {
+    "id": 1,
+    "title": "Título do Post",
+    "content": "Conteúdo do Post",
+    "authorId": 1
+  }
+  ```
+
+#### **PUT `/api/posts/:id`**
+- **Descrição:** Atualiza os dados de um post existente.
+- **Body:**  
+  ```json
+  {
+    "title": "Título Atualizado",
+    "content": "Novo conteúdo"
+  }
+  ```
+- **Resposta:**  
+  ```json
+  {
+    "id": 1,
+    "title": "Título Atualizado",
+    "content": "Novo conteúdo",
+    "authorId": 1
+  }
+  ```
 
 ---
 
-## Estrutura do Banco de Dados
+### **Tags (`/api/tags`)**
 
-### Post
-| Campo      | Tipo      | Descrição                          |
-|------------|-----------|------------------------------------|
-| id         | Int       | Identificador único.              |
-| createdAt  | DateTime  | Data de criação.                  |
-| updatedAt  | DateTime  | Data de última atualização.       |
-| title      | String    | Título do post.                   |
-| content    | String?   | Conteúdo do post (opcional).      |
-| published  | Boolean   | Indica se o post está publicado.  |
-| authorId   | Int?      | Identificador do autor (opcional).|
+#### **GET `/api/tags`**
+- **Descrição:** Retorna todas as tags cadastradas.
+- **Resposta:**  
+  ```json
+  [
+    { "id": 1, "name": "Tag 1" },
+    { "id": 2, "name": "Tag 2" }
+  ]
+  ```
 
-### User
-| Campo      | Tipo      | Descrição                          |
-|------------|-----------|------------------------------------|
-| id         | Int       | Identificador único.              |
-| email      | String    | E-mail do usuário (único).        |
-| name       | String?   | Nome do usuário (opcional).       |
+#### **POST `/api/tags`**
+- **Descrição:** Cria uma nova tag.
+- **Body:**  
+  ```json
+  {
+    "name": "Nova Tag"
+  }
+  ```
+- **Resposta:**  
+  ```json
+  {
+    "id": 1,
+    "name": "Nova Tag"
+  }
+  ```
 
-### Tag
-| Campo      | Tipo      | Descrição                          |
-|------------|-----------|------------------------------------|
-| id         | Int       | Identificador único.              |
-| name       | String    | Nome da tag.                      |
+#### **GET `/api/tags/:id`**
+- **Descrição:** Retorna detalhes de uma tag específica.
+- **Resposta:**  
+  ```json
+  {
+    "id": 1,
+    "name": "Tag 1"
+  }
+  ```
+
+#### **PUT `/api/tags/:id`**
+- **Descrição:** Atualiza os dados de uma tag existente.
+- **Body:**  
+  ```json
+  {
+    "name": "Tag Atualizada"
+  }
+  ```
+- **Resposta:**  
+  ```json
+  {
+    "id": 1,
+    "name": "Tag Atualizada"
+  }
+  ```
 
 ---
 
-## Estrutura do Projeto
+### **Usuários (`/api/users`)**
 
-```
-.
-├── prisma/
-│   ├── schema.prisma      # Definição do banco de dados.
-├── routes/
-│   ├── users.js           # Rotas para usuários.
-│   ├── posts.js           # Rotas para posts.
-│   ├── tags.js            # Rotas para tags.
-├── .env                   # Variáveis de ambiente.
-├── package.json           # Dependências do projeto.
-├── server.js              # Configuração do servidor Express.
-```
+#### **GET `/api/users`**
+- **Descrição:** Retorna todos os usuários cadastrados.
+- **Resposta:**  
+  ```json
+  [
+    { "id": 1, "email": "user1@example.com", "name": "Usuário 1" }
+  ]
+  ```
+
+#### **POST `/api/users`**
+- **Descrição:** Cria um novo usuário.
+- **Body:**  
+  ```json
+  {
+    "email": "user@example.com",
+    "name": "Novo Usuário"
+  }
+  ```
+- **Resposta:**  
+  ```json
+  {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "Novo Usuário"
+  }
+  ```
+
+#### **GET `/api/users/:id`**
+- **Descrição:** Retorna detalhes de um usuário específico.
+- **Resposta:**  
+  ```json
+  {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "Usuário 1"
+  }
+  ```
+
+#### **PUT `/api/users/:id`**
+- **Descrição:** Atualiza os dados de um usuário existente.
+- **Body:**  
+  ```json
+  {
+    "name": "Usuário Atualizado"
+  }
+  ```
+- **Resposta:**  
+  ```json
+  {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "Usuário Atualizado"
+  }
+  ```
+
+#### **DELETE `/api/users/:id`**
+- **Descrição:** Remove um usuário.
+- **Resposta:**  
+  ```json
+  {
+    "message": "Usuário deletado com sucesso."
+  }
+  ```
