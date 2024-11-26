@@ -15,7 +15,7 @@ Esta API foi criada com **Express.js** e **Prisma** para gerenciar posts, usuár
 1. **Clonar o repositório**:
 
    ```bash
-   git clone https://github.com/seu-usuario/sua-api.git
+   git clone https://github.com/antonielzeferino/first-prisma-api.git
    ```
 
 2. **Instalar as dependências**:
